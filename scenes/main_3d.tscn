@@ -1,0 +1,397 @@
+[gd_scene load_steps=7 format=3 uid="uid://cmain3d01"]
+
+[ext_resource type="Script" path="res://scripts/main_3d.gd" id="1_main3d"]
+[ext_resource type="Script" path="res://scripts/tilemap_loader_3d.gd" id="2_tilemap3d"]
+[ext_resource type="PackedScene" path="res://scenes/player_3d.tscn" id="3_player3d"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_sky"]
+sky_top_color = Color(0.380392, 0.6, 0.980392, 1)
+sky_horizon_color = Color(0.647059, 0.788235, 0.960784, 1)
+ground_bottom_color = Color(0.2, 0.25, 0.35, 1)
+
+[sub_resource type="Sky" id="Sky_env"]
+sky_material = SubResource("ProceduralSkyMaterial_sky")
+
+[sub_resource type="Environment" id="Environment_3d"]
+background_mode = 2
+sky = SubResource("Sky_env")
+ambient_light_source = 3
+ambient_light_color = Color(0.8, 0.85, 0.95, 1)
+ambient_light_energy = 0.6
+tonemap_mode = 2
+glow_enabled = true
+glow_intensity = 0.5
+
+[node name="Main3D" type="Node3D"]
+script = ExtResource("1_main3d")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_3d")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.866025, -0.25, 0.433013, 0, 0.866025, 0.5, -0.5, -0.433013, 0.75, 0, 15, 10)
+light_color = Color(1, 0.96, 0.9, 1)
+light_energy = 1.2
+shadow_enabled = true
+
+[node name="TileMapLoader3D" type="Node3D" parent="."]
+script = ExtResource("2_tilemap3d")
+
+[node name="Player3D" parent="." instance=ExtResource("3_player3d")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.5, 1.5, 0)
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 4, 16)
+fov = 48.0
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="HUD" type="Control" parent="CanvasLayer"]
+layout_mode = 3
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 40.0
+offset_top = 20.0
+offset_right = -40.0
+offset_bottom = 70.0
+grow_horizontal = 2
+
+[node name="ScoreContainer" type="VBoxContainer" parent="CanvasLayer/HUD"]
+layout_mode = 1
+offset_right = 100.0
+offset_bottom = 50.0
+
+[node name="Label" type="Label" parent="CanvasLayer/HUD/ScoreContainer"]
+layout_mode = 2
+text = "MARIO"
+
+[node name="ScoreValue" type="Label" parent="CanvasLayer/HUD/ScoreContainer"]
+layout_mode = 2
+text = "000000"
+
+[node name="CoinsContainer" type="VBoxContainer" parent="CanvasLayer/HUD"]
+layout_mode = 1
+offset_left = 180.0
+offset_right = 260.0
+offset_bottom = 50.0
+
+[node name="Label" type="Label" parent="CanvasLayer/HUD/CoinsContainer"]
+layout_mode = 2
+text = "COINS"
+
+[node name="CoinsValue" type="Label" parent="CanvasLayer/HUD/CoinsContainer"]
+layout_mode = 2
+text = "×00"
+
+[node name="WorldContainer" type="VBoxContainer" parent="CanvasLayer/HUD"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -260.0
+offset_right = -180.0
+offset_bottom = 50.0
+grow_horizontal = 0
+
+[node name="Label" type="Label" parent="CanvasLayer/HUD/WorldContainer"]
+layout_mode = 2
+text = "WORLD"
+
+[node name="Label2" type="Label" parent="CanvasLayer/HUD/WorldContainer"]
+layout_mode = 2
+text = "1-1 (3D)"
+
+[node name="TopContainer" type="VBoxContainer" parent="CanvasLayer/HUD"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -120.0
+offset_bottom = 50.0
+grow_horizontal = 0
+
+[node name="Label" type="Label" parent="CanvasLayer/HUD/TopContainer"]
+layout_mode = 2
+text = "TOP"
+
+[node name="TopValue" type="Label" parent="CanvasLayer/HUD/TopContainer"]
+layout_mode = 2
+text = "000000"
+
+[node name="StartOverlay" type="Control" parent="CanvasLayer"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Dim" type="ColorRect" parent="CanvasLayer/StartOverlay"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.02, 0.04, 0.08, 0.7)
+
+[node name="Card" type="Panel" parent="CanvasLayer/StartOverlay"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -230.0
+offset_top = -140.0
+offset_right = 230.0
+offset_bottom = 140.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="CanvasLayer/StartOverlay/Card"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 20.0
+offset_bottom = 46.0
+grow_horizontal = 2
+text = "SUPER MARIO 2.5D (GODOT 3D)"
+horizontal_alignment = 1
+
+[node name="Subtitle" type="Label" parent="CanvasLayer/StartOverlay/Card"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 50.0
+offset_bottom = 76.0
+grow_horizontal = 2
+text = "VGLC World 1-1 with 3D Vulkan PBR & Parallax"
+horizontal_alignment = 1
+
+[node name="Instructions" type="Label" parent="CanvasLayer/StartOverlay/Card"]
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -30.0
+offset_bottom = 40.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "A / D oder Pfeile: Laufen
+Leertaste / W: Springen (variabel)
+P: Pause | R: Reset"
+horizontal_alignment = 1
+
+[node name="StartButton" type="Button" parent="CanvasLayer/StartOverlay/Card"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -100.0
+offset_top = -50.0
+offset_right = 100.0
+offset_bottom = -15.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "SPIEL STARTEN"
+
+[node name="PauseOverlay" type="Control" parent="CanvasLayer"]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Dim" type="ColorRect" parent="CanvasLayer/PauseOverlay"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.02, 0.04, 0.08, 0.7)
+
+[node name="Card" type="Panel" parent="CanvasLayer/PauseOverlay"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -160.0
+offset_top = -90.0
+offset_right = 160.0
+offset_bottom = 90.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="CanvasLayer/PauseOverlay/Card"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 20.0
+offset_bottom = 46.0
+grow_horizontal = 2
+text = "PAUSE"
+horizontal_alignment = 1
+
+[node name="ResumeButton" type="Button" parent="CanvasLayer/PauseOverlay/Card"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -80.0
+offset_top = -50.0
+offset_right = 80.0
+offset_bottom = -15.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "WEITER"
+
+[node name="GameOverOverlay" type="Control" parent="CanvasLayer"]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Dim" type="ColorRect" parent="CanvasLayer/GameOverOverlay"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.02, 0.04, 0.08, 0.7)
+
+[node name="Card" type="Panel" parent="CanvasLayer/GameOverOverlay"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -180.0
+offset_top = -100.0
+offset_right = 180.0
+offset_bottom = 100.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="CanvasLayer/GameOverOverlay/Card"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 15.0
+offset_bottom = 41.0
+grow_horizontal = 2
+text = "ABGESTÜRZT!"
+horizontal_alignment = 1
+
+[node name="ScoreLabel" type="Label" parent="CanvasLayer/GameOverOverlay/Card"]
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -13.0
+offset_bottom = 13.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "SCORE: 0"
+horizontal_alignment = 1
+
+[node name="RestartButton" type="Button" parent="CanvasLayer/GameOverOverlay/Card"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -90.0
+offset_top = -45.0
+offset_right = 90.0
+offset_bottom = -15.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "NEUSTART"
+
+[node name="VictoryOverlay" type="Control" parent="CanvasLayer"]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Dim" type="ColorRect" parent="CanvasLayer/VictoryOverlay"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.02, 0.04, 0.08, 0.7)
+
+[node name="Card" type="Panel" parent="CanvasLayer/VictoryOverlay"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -180.0
+offset_top = -100.0
+offset_right = 180.0
+offset_bottom = 100.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="CanvasLayer/VictoryOverlay/Card"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 15.0
+offset_bottom = 41.0
+grow_horizontal = 2
+text = "ZIEL ERREICHT!"
+horizontal_alignment = 1
+
+[node name="ScoreLabel" type="Label" parent="CanvasLayer/VictoryOverlay/Card"]
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -13.0
+offset_bottom = 13.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "FINAL SCORE: 0"
+horizontal_alignment = 1
+
+[node name="RestartButton" type="Button" parent="CanvasLayer/VictoryOverlay/Card"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -100.0
+offset_top = -45.0
+offset_right = 100.0
+offset_bottom = -15.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "NOCHMAL SPIELEN"

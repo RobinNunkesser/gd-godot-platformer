@@ -32,15 +32,21 @@ gd-platformer-godot/
 ├── levels/
 │   └── mario-1-1.txt           # Vollständiges VGLC World 1-1 (202 Spalten)
 ├── scenes/
-│   ├── main.tscn               # Hauptszene (HUD, Kamera, Overlays)
-│   └── player.tscn             # CharacterBody2D Szene
+│   ├── main.tscn               # 2D-Hauptszene (ColorRect, 2D-Kamera)
+│   ├── player.tscn             # 2D CharacterBody2D Szene
+│   ├── main_3d.tscn            # 2.5D-Hauptszene (PBR-Kuben, Vulkan 3D-Licht & Schatten)
+│   └── player_3d.tscn          # 2.5D CharacterBody3D (Z-Achse gelockt)
 ├── scripts/
-│   ├── config.gd               # Zentrale Tuning-Parameter (PlatformerConfig)
-│   ├── tilemap_loader.gd       # VGLC ASCII Parser & Geometrie-Erzeugung
-│   ├── player.gd               # Kinematik, Coyote Time, Jump Buffering
+│   ├── config.gd               # 2D Tuning-Parameter (PlatformerConfig)
+│   ├── config_3d.gd            # 3D Tuning-Parameter (PlatformerConfig3D)
+│   ├── tilemap_loader.gd       # 2D ASCII Parser
+│   ├── tilemap_loader_3d.gd    # 3D PBR Extrusion & Tiefenparallaxe
+│   ├── player.gd               # 2D Kinematik & Sprung
+│   ├── player_3d.gd            # 3D Kinematik (axis_lock_linear_z = true)
 │   ├── state_manager.gd        # Finite State Machine & Highscore
-│   └── main.gd                 # Game Loop, UI-Steuerung, Signale
-├── test_gameplay.gd            # Headless Unit- & Gameplay-Testrunner
+│   ├── main.gd                 # 2D Game Loop
+│   └── main_3d.gd              # 3D Game Loop
+├── test_gameplay.gd            # Headless Unit- & Gameplay-Testrunner (2D & 3D)
 └── project.godot               # Godot 4 Projektkonfiguration
 ```
 
@@ -51,14 +57,19 @@ gd-platformer-godot/
 ### 1. In Godot 4 Editor
 1. Öffne Godot 4.3+.
 2. Wähle **Import** und navigiere in diesen Ordner.
-3. Starte das Projekt mit `F5` oder wähle `scenes/main.tscn`.
+3. Starte entweder:
+   - `scenes/main.tscn` für die **native 2D-Version**, oder
+   - `scenes/main_3d.tscn` für die **plastische 2.5D-Version mit 3D-Licht und Schatten**.
 
 ### 2. Über die Kommandozeile
 ```bash
-# Spiel direkt im Fenster starten
+# 2D-Version starten
 godot scenes/main.tscn
 
-# Headless Unit-Tests ausführen
+# 2.5D-3D-Version mit Vulkan-Licht und Parallaxe starten
+godot scenes/main_3d.tscn
+
+# Headless Unit-Tests (prüft 2D & 3D Pipelines)
 godot --headless -s test_gameplay.gd
 ```
 

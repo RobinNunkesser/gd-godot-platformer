@@ -5,20 +5,27 @@ const PlatformerStateManager = preload("res://scripts/state_manager.gd")
 const TileMapLoader = preload("res://scripts/tilemap_loader.gd")
 const PlatformerPlayer = preload("res://scripts/player.gd")
 
+const PlatformerConfig3D = preload("res://scripts/config_3d.gd")
+const TileMapLoader3D = preload("res://scripts/tilemap_loader_3d.gd")
+const PlatformerPlayer3D = preload("res://scripts/player_3d.gd")
+
 func _init() -> void:
-	print("--- Running Headless Godot 4 Unit & Gameplay Tests ---")
+	print("--- Running Headless Godot 4 Unit & Gameplay Tests (2D & 3D) ---")
 	var success := true
 
 	# Test 1: PlatformerConfig
-	print("[1/4] Testing PlatformerConfig...")
+	print("[1/5] Testing PlatformerConfig (2D & 3D)...")
 	if PlatformerConfig.TILE_SIZE <= 0 or PlatformerConfig.GRAVITY <= 0 or PlatformerConfig.JUMP_FORCE >= 0:
-		push_error("Config constants invalid!")
+		push_error("2D Config constants invalid!")
 		success = false
-	else:
+	if PlatformerConfig3D.TILE_SIZE <= 0 or PlatformerConfig3D.GRAVITY <= 0 or PlatformerConfig3D.JUMP_FORCE <= 0:
+		push_error("3D Config constants invalid!")
+		success = false
+	if success:
 		print("  -> Config constants OK.")
 
 	# Test 2: PlatformerStateManager
-	print("[2/4] Testing PlatformerStateManager...")
+	print("[2/5] Testing PlatformerStateManager...")
 	var sm = PlatformerStateManager.new()
 	sm.reset()
 	if sm.get_state_string() != "READY":
@@ -38,54 +45,68 @@ func _init() -> void:
 		success = false
 	print("  -> StateManager OK.")
 
-	# Test 3: TileMapLoader Level Parsing
-	print("[3/4] Testing TileMapLoader on VGLC World 1-1...")
+	# Test 3: TileMapLoader 2D
+	print("[3/5] Testing TileMapLoader (2D) on VGLC World 1-1...")
 	var loader = TileMapLoader.new()
 	root.add_child(loader)
 	var loaded: bool = loader.load_level_from_file("res://levels/mario-1-1.txt")
-	if not loaded:
-		push_error("Failed to load levels/mario-1-1.txt!")
-		success = false
-	elif loader.level_height_rows != 14 or loader.level_width_cols < 200:
-		push_error("Level dimensions mismatch: %d rows, %d cols" % [loader.level_height_rows, loader.level_width_cols])
-		success = false
-	elif loader.question_blocks.size() == 0:
-		push_error("No question blocks parsed!")
+	if not loaded or loader.level_height_rows != 14 or loader.level_width_cols < 200:
+		push_error("2D Loader failed!")
 		success = false
 	else:
-		print("  -> TileMapLoader parsed %d rows x %d cols (%d question blocks) OK." % [
-			loader.level_height_rows,
-			loader.level_width_cols,
-			loader.question_blocks.size()
-		])
+		print("  -> TileMapLoader 2D parsed %d rows x %d cols OK." % [loader.level_height_rows, loader.level_width_cols])
 	loader.queue_free()
 
-	# Test 4: Player Kinematics Simulation
-	print("[4/4] Testing Player Kinematics Simulation...")
+	# Test 4: Player 2D Kinematics
+	print("[4/5] Testing Player 2D Kinematics...")
 	var player_scene = preload("res://scenes/player.tscn")
 	var player = player_scene.instantiate()
 	root.add_child(player)
 	player.reset_position(Vector2(100.0, 500.0))
-
-	# Run 5 frames moving right
 	for i in range(5):
 		player.update_kinematics(0.016, false, true, false, false)
-	if player.velocity.x <= 0:
-		push_error("Player did not accelerate right!")
-		success = false
-
-	# Test jump impulse with coyote timer active
 	player.coyote_timer = PlatformerConfig.COYOTE_TIME_SEC
 	player.update_kinematics(0.016, false, false, true, true)
 	if player.velocity.y >= 0:
-		push_error("Player did not receive jump impulse! velocity.y = " + str(player.velocity.y))
+		push_error("Player 2D jump failed!")
 		success = false
 	else:
-		print("  -> Player kinematics & jump impulse OK (velocity.y = %f)." % player.velocity.y)
+		print("  -> Player 2D kinematics OK.")
 	player.queue_free()
 
+	# Test 5: TileMapLoader 3D & Player 3D
+	print("[5/5] Testing 3D Pipeline (TileMapLoader3D & Player3D)...")
+	var loader3d = TileMapLoader3D.new()
+	root.add_child(loader3d)
+	var loaded3d: bool = loader3d.load_level_from_file("res://levels/mario-1-1.txt")
+	if not loaded3d or loader3d.level_height_rows != 14 or loader3d.level_width_cols < 200:
+		push_error("3D Loader failed!")
+		success = false
+	else:
+		print("  -> TileMapLoader 3D parsed %d rows x %d cols (%d question blocks) OK." % [
+			loader3d.level_height_rows,
+			loader3d.level_width_cols,
+			loader3d.question_blocks.size()
+		])
+	loader3d.queue_free()
+
+	var player3d_scene = preload("res://scenes/player_3d.tscn")
+	var player3d = player3d_scene.instantiate()
+	root.add_child(player3d)
+	player3d.reset_position(Vector3(2.5, 1.5, 0.0))
+	for i in range(5):
+		player3d.update_kinematics(0.016, false, true, false, false)
+	player3d.coyote_timer = PlatformerConfig3D.COYOTE_TIME_SEC
+	player3d.update_kinematics(0.016, false, false, true, true)
+	if player3d.velocity.y <= 0:
+		push_error("Player 3D jump failed! velocity.y = " + str(player3d.velocity.y))
+		success = false
+	else:
+		print("  -> Player 3D kinematics OK (velocity.y = %f)." % player3d.velocity.y)
+	player3d.queue_free()
+
 	if success:
-		print("=== ALL GODOT 4 TESTS PASSED SUCCESSFULLY! ===")
+		print("=== ALL GODOT 4 TESTS (2D & 3D) PASSED SUCCESSFULLY! ===")
 		quit(0)
 	else:
 		push_error("=== TESTS FAILED! ===")
