@@ -51,7 +51,16 @@ func _setup_materials() -> void:
 	mat_flag.emission = Color("#fef08a")
 	mat_flag.emission_energy_multiplier = 0.4
 
+func clear() -> void:
+	for child in get_children():
+		child.queue_free()
+	question_blocks.clear()
+	level_width_cols = 0
+	level_height_rows = 0
+
+
 func load_level_from_file(path: String) -> bool:
+	clear()
 	var file := FileAccess.open(path, FileAccess.READ)
 	if not file:
 		push_error("Could not open level file: " + path)

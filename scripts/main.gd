@@ -21,7 +21,18 @@ const PlatformerPlayer = preload("res://scripts/player.gd")
 @onready var overlay_victory: Control = $CanvasLayer/VictoryOverlay
 
 @onready var gameover_score: Label = $CanvasLayer/GameOverOverlay/Card/ScoreLabel
-@onready var victory_score: Label = $CanvasLayer/VictoryOverlay/Card/ScoreLabel
+@onready var lbl_world: Label = $CanvasLayer/HUD/WorldContainer/Label2
+@onready var victory_title: Label = $CanvasLayer/VictoryOverlay/Card/Title
+@onready var victory_btn: Button = $CanvasLayer/VictoryOverlay/Card/RestartButton
+
+const LEVELS: Array[String] = [
+	"res://levels/level-1.txt",
+	"res://levels/level-2.txt",
+	"res://levels/level-3.txt",
+	"res://levels/level-4.txt",
+	"res://levels/level-5.txt",
+]
+var current_level_index: int = 0
 
 var state_manager: PlatformerStateManager
 
@@ -31,26 +42,29 @@ func _ready() -> void:
 	state_manager.coins_changed.connect(_on_coins_changed)
 	state_manager.state_changed.connect(_on_state_changed)
 
-	var level_path := "res://levels/level-1.txt"
-	if not FileAccess.file_exists(level_path) and FileAccess.file_exists("res://levels/mario-1-1.txt"):
-		level_path = "res://levels/mario-1-1.txt"
-	tilemap_loader.load_level_from_file(level_path)
 	tilemap_loader.coin_collected.connect(_on_coin_collected)
 	tilemap_loader.goal_reached.connect(_on_goal_reached)
-
 	player.block_hit_from_below.connect(_on_block_hit)
 
+	load_level(0)
 	_bind_ui_buttons()
 	_update_hud()
-
-	# Start in READY State
 	_show_overlay(overlay_start)
+
+func load_level(index: int) -> void:
+	current_level_index = clamp(index, 0, LEVELS.size() - 1)
+	var path: String = LEVELS[current_level_index]
+	tilemap_loader.load_level_from_file(path)
+	player.reset_position()
+	camera.position.x = PlatformerConfig.START_X + 120.0
+	camera.position.y = 360.0
+	_update_hud()
 
 func _bind_ui_buttons() -> void:
 	$CanvasLayer/StartOverlay/Card/StartButton.pressed.connect(start_game)
 	$CanvasLayer/PauseOverlay/Card/ResumeButton.pressed.connect(toggle_pause)
 	$CanvasLayer/GameOverOverlay/Card/RestartButton.pressed.connect(restart_game)
-	$CanvasLayer/VictoryOverlay/Card/RestartButton.pressed.connect(restart_game)
+	victory_btn.pressed.connect(on_victory_action)
 
 func _process(delta: float) -> void:
 	if Input.is_action_just_pressed("pause"):
@@ -88,10 +102,20 @@ func toggle_pause() -> void:
 
 func restart_game() -> void:
 	_hide_all_overlays()
-	player.reset_position()
-	camera.position.x = PlatformerConfig.START_X + 120.0
+	load_level(current_level_index)
 	state_manager.reset()
 	state_manager.start()
+
+func on_victory_action() -> void:
+	if current_level_index < LEVELS.size() - 1:
+		current_level_index += 1
+		load_level(current_level_index)
+		_hide_all_overlays()
+		state_manager.start()
+	else:
+		current_level_index = 0
+		load_level(current_level_index)
+		restart_game()
 
 func _on_block_hit(block: StaticBody2D) -> void:
 	tilemap_loader.hit_block(block)
@@ -118,7 +142,21 @@ func _on_state_changed(new_state: String) -> void:
 			gameover_score.text = "SCORE: " + str(state_manager.score)
 			_show_overlay(overlay_gameover)
 		"VICTORY":
-			victory_score.text = "FINAL SCORE: " + str(state_manager.score)
+			var victory_score: Label = $CanvasLayer/VictoryOverlay/Card/ScoreLabel
+			if current_level_index < LEVELS.size() - 1:
+				if victory_title:
+					victory_title.text = "LEVEL %d GESCHAFFT!" % (current_level_index + 1)
+				if victory_score:
+					victory_score.text = "SCORE: " + str(state_manager.score)
+				if victory_btn:
+					victory_btn.text = "NÄCHSTES LEVEL (%d/%d)" % [current_level_index + 2, LEVELS.size()]
+			else:
+				if victory_title:
+					victory_title.text = "KAMPAGNE GEMEISTERT!"
+				if victory_score:
+					victory_score.text = "GESAMTERGEBNIS: " + str(state_manager.score)
+				if victory_btn:
+					victory_btn.text = "KAMPAGNE NEUSTARTEN"
 			_show_overlay(overlay_victory)
 		"READY":
 			_show_overlay(overlay_start)
@@ -130,6 +168,8 @@ func _update_hud() -> void:
 		lbl_coins.text = "×%02d" % state_manager.coins
 	if lbl_highscore:
 		lbl_highscore.text = "%06d" % state_manager.highscore
+	if lbl_world:
+		lbl_world.text = "1-%d" % (current_level_index + 1)
 
 func _hide_all_overlays() -> void:
 	overlay_start.visible = false

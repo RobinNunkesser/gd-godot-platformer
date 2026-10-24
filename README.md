@@ -30,8 +30,12 @@ gd-platformer-godot/
 │   ├── 03_architecture_dual.md
 │   ├── 04_state_machine.md
 │   └── 05_parameters.md
-├── levels/
-│   └── level-1.txt             # Didaktischer MIT-Referenzlevel (120 Spalten x 14 Zeilen)
+├── levels/                     # 5 kuratierte VGLC-kompatible Kampagnen-Level (100% frei / MIT)
+│   ├── level-1.txt             # Welt 1-1: Tutorial & Plains (120 Spalten)
+│   ├── level-2.txt             # Welt 1-2: Pipe Hills (125 Spalten)
+│   ├── level-3.txt             # Welt 1-3: The Chasm (130 Spalten)
+│   ├── level-4.txt             # Welt 1-4: Sky Bricks (135 Spalten)
+│   └── level-5.txt             # Welt 1-5: GAN Challenge (140 Spalten)
 ├── scenes/
 │   ├── main.tscn               # 2D-Hauptszene (ColorRect, 2D-Kamera)
 │   ├── player.tscn             # 2D CharacterBody2D Szene
@@ -40,23 +44,33 @@ gd-platformer-godot/
 ├── scripts/
 │   ├── config.gd               # 2D Tuning-Parameter (PlatformerConfig)
 │   ├── config_3d.gd            # 3D Tuning-Parameter (PlatformerConfig3D)
-│   ├── tilemap_loader.gd       # 2D ASCII Parser
+│   ├── tilemap_loader.gd       # 2D ASCII Parser & Level-Manager
 │   ├── tilemap_loader_3d.gd    # 3D PBR Extrusion & Tiefenparallaxe
 │   ├── player.gd               # 2D Kinematik & Sprung
 │   ├── player_3d.gd            # 3D Kinematik (axis_lock_linear_z = true)
 │   ├── state_manager.gd        # Finite State Machine & Highscore
-│   ├── main.gd                 # 2D Game Loop
-│   └── main_3d.gd              # 3D Game Loop
-├── test_gameplay.gd            # Headless Unit- & Gameplay-Testrunner (2D & 3D)
+│   ├── main.gd                 # 2D Game Loop mit Kampagnen-Progression
+│   └── main_3d.gd              # 3D Game Loop mit Kampagnen-Progression
+├── test_gameplay.gd            # Headless Unit- & Level-Testrunner (2D & 3D, prüft alle 5 Level)
 ├── LICENSE                     # MIT License
 └── project.godot               # Godot 4 Projektkonfiguration
 ```
 
 ---
 
-## 🗺️ Kompatibilität mit dem Video Game Level Corpus (VGLC)
+## 🗺️ Die 5-Level-Kampagne & VGLC-Kompatibilität
 
-Das Spiel lädt standardmäßig den mitgelieferten didaktischen Referenzlevel `levels/level-1.txt`. Der Parser unterstützt beliebige 14-zeilige ASCII-Karten im Format des **Video Game Level Corpus (VGLC)** (*Summerville et al., FDG 2016*):
+Das Spiel enthält eine vollwertige 5-Level-Kampagne mit fließendem Levelübergang bei Erreichen der Zielflagge (`NÄCHSTES LEVEL (X/5)` bzw. `KAMPAGNE NEUSTARTEN`):
+
+| Level | Name | Länge | Didaktischer Fokus / Leveldesign |
+|---|---|---|---|
+| **Level 1** | *Tutorial / Plains* | 120 Spalten | Grundmechanik, Coin-Blöcke, erste Bodenlücken, flache Röhren, Pyramidentreppe zum Ziel |
+| **Level 2** | *Pipe Hills* | 125 Spalten | Gestaffelte Röhrenhöhen (Höhe 2, 3, 4), erhöhte Ziegelbrücken, vertikale Hindernisse |
+| **Level 3** | *The Chasm* | 130 Spalten | Präzise Sprünge über weite Abgründe mit Trittsteinen; fordert *Coyote Time* und *Jump Buffering* |
+| **Level 4** | *Sky Bricks* | 135 Spalten | Luftige Höhen über bodenlosen Schluchten; Multi-Story Plattform-Parcours mit Ziegel-Highways |
+| **Level 5** | *GAN Challenge* | 140 Spalten | Rhythmisches PCGML-Muster (Procedural Content Generation) mit rhythmischen Hindernisketten |
+
+Der Parser verarbeitet beliebige 14-zeilige ASCII-Karten im Standardformat des **Video Game Level Corpus (VGLC)** (*Summerville et al., FDG 2016*):
 
 - `X` = Fester Boden / Pyramidenstufe
 - `S` = Ziegelblock (*Brick*)

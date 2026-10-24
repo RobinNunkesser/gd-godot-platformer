@@ -45,16 +45,18 @@ func _init() -> void:
 		success = false
 	print("  -> StateManager OK.")
 
-	# Test 3: TileMapLoader 2D
-	print("[3/5] Testing TileMapLoader (2D) on level-1.txt...")
+	# Test 3: TileMapLoader 2D (All 5 Curated Levels)
+	print("[3/5] Testing TileMapLoader (2D) on all 5 curated levels...")
 	var loader = TileMapLoader.new()
 	root.add_child(loader)
-	var loaded: bool = loader.load_level_from_file("res://levels/level-1.txt")
-	if not loaded or loader.level_height_rows != 14 or loader.level_width_cols < 100:
-		push_error("2D Loader failed!")
-		success = false
-	else:
-		print("  -> TileMapLoader 2D parsed %d rows x %d cols OK." % [loader.level_height_rows, loader.level_width_cols])
+	for i in range(1, 6):
+		var path := "res://levels/level-%d.txt" % i
+		var loaded: bool = loader.load_level_from_file(path)
+		if not loaded or loader.level_height_rows != 14 or loader.level_width_cols < 100:
+			push_error("2D Loader failed on " + path)
+			success = false
+		else:
+			print("  -> Level %d parsed: %d rows x %d cols OK." % [i, loader.level_height_rows, loader.level_width_cols])
 	loader.queue_free()
 
 	# Test 4: Player 2D Kinematics
@@ -74,20 +76,23 @@ func _init() -> void:
 		print("  -> Player 2D kinematics OK.")
 	player.queue_free()
 
-	# Test 5: TileMapLoader 3D & Player 3D
-	print("[5/5] Testing 3D Pipeline (TileMapLoader3D & Player3D)...")
+	# Test 5: TileMapLoader 3D & Player 3D (All 5 Curated Levels)
+	print("[5/5] Testing 3D Pipeline (TileMapLoader3D & Player3D on 5 levels)...")
 	var loader3d = TileMapLoader3D.new()
 	root.add_child(loader3d)
-	var loaded3d: bool = loader3d.load_level_from_file("res://levels/level-1.txt")
-	if not loaded3d or loader3d.level_height_rows != 14 or loader3d.level_width_cols < 100:
-		push_error("3D Loader failed!")
-		success = false
-	else:
-		print("  -> TileMapLoader 3D parsed %d rows x %d cols (%d question blocks) OK." % [
-			loader3d.level_height_rows,
-			loader3d.level_width_cols,
-			loader3d.question_blocks.size()
-		])
+	for i in range(1, 6):
+		var path := "res://levels/level-%d.txt" % i
+		var loaded3d: bool = loader3d.load_level_from_file(path)
+		if not loaded3d or loader3d.level_height_rows != 14 or loader3d.level_width_cols < 100:
+			push_error("3D Loader failed on " + path)
+			success = false
+		else:
+			print("  -> Level %d 3D parsed: %d rows x %d cols (%d question blocks) OK." % [
+				i,
+				loader3d.level_height_rows,
+				loader3d.level_width_cols,
+				loader3d.question_blocks.size()
+			])
 	loader3d.queue_free()
 
 	var player3d_scene = preload("res://scenes/player_3d.tscn")

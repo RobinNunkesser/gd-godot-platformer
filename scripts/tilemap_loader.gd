@@ -11,7 +11,16 @@ var level_height_rows: int = 0
 var flagpole_col: int = 198
 var question_blocks: Dictionary = {}
 
+func clear() -> void:
+	for child in get_children():
+		child.queue_free()
+	question_blocks.clear()
+	level_width_cols = 0
+	level_height_rows = 0
+
+
 func load_level_from_file(path: String) -> bool:
+	clear()
 	var file := FileAccess.open(path, FileAccess.READ)
 	if not file:
 		push_error("Could not open level file: " + path)
