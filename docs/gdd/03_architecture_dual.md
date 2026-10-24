@@ -2,7 +2,7 @@
 
 ## Das fundamentale Prinzip: Diskrete Kachelwelt
 
-Die Levelkarte wird als 2D-Zeichenmatrix aus `levels/mario-1-1.txt` (202 $\times$ 14 Kacheln) geladen:
+Die Levelkarte wird als 2D-Zeichenmatrix aus `levels/level-1.txt` (120 $\times$ 14 Kacheln) geladen:
 - **Kachelgröße:** $\text{tileSize} = 1.0\text{ Units}$ (oder $32\text{ px}$ in 2D)
 - **$\mathcal{O}(1)$-Kollisions-Lookup:**
   $$\text{tile}_X = \lfloor x / \text{tileSize} \rfloor, \quad \text{tile}_Y = \lfloor y / \text{tileSize} \rfloor$$

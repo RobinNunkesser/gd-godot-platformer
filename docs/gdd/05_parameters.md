@@ -6,7 +6,7 @@ Alle physikalischen und visuellen Stellschrauben müssen in eine zentrale Konfig
 
 ## 📐 Mathematische Auslegung der Sprunghöhe
 
-Im VGLC-Level *Super Mario Bros.* World 1-1 besitzen die Hindernisse folgende Höhen:
+Im didaktischen VGLC-Referenzlevel besitzen die Hindernisse folgende Höhen:
 - **Röhre 1 (Spalte 28):** 2 Blöcke hoch
 - **Röhre 2 (Spalte 38):** 3 Blöcke hoch
 - **Röhre 3 & 4 (Spalte 46 & 57):** 4 Blöcke hoch

@@ -1,10 +1,9 @@
 # 01 - High Concept & Core Gameplay Loop
 
-## High Concept
-**Retro Platformer (VGLC Mario 1-1)** ist ein archetypischer 2D/2.5D-Tile-Platformer basierend auf dem wissenschaftlichen *Video Game Level Corpus* (VGLC, AAAI 2016). Der Spieler steuert eine Spielfigur durch das vollständige legendäre erste Level von *Super Mario Bros.* (World 1-1 mit 202 Spalten), überwindet 4 Röhren aufsteigender Höhe, 3 Abgründe, brick-Strukturen und die finale Pyramidentreppe bis zur Zielflagge.
+**Retro Platformer (VGLC Case Study)** ist ein archetypischer 2D/2.5D-Tile-Platformer basierend auf dem wissenschaftlichen *Video Game Level Corpus* (VGLC, AAAI 2016). Der Spieler steuert eine Spielfigur durch ein didaktisches Level, überwindet Röhren aufsteigender Höhe, Abgründe, Brick-Strukturen und die finale Pyramidentreppe bis zur Zielflagge.
 
 - **Genre:** 2D / 2.5D Tile-Platformer
-- **Datenbasis:** VGLC ASCII-Matrix (`levels/mario-1-1.txt`, 202 $\times$ 14 Kacheln)
+- **Datenbasis:** VGLC ASCII-Matrix (`levels/level-1.txt`, 120 $\times$ 14 Kacheln, optional externe VGLC-Level)
 - **Duale Ziel-Plattformen:**
   - **Godot 4:** 2D Nativ (`TileMapLayer`, `CharacterBody2D`, GDScript)
   - **Babylon.js:** 2.5D Web (`InstancedMesh`, Fixed-Z-Camera, TypeScript)

@@ -1,13 +1,13 @@
 ; Engine configuration file.
-; Super Mario Bros. World 1-1 (VGLC) 2D Platformer in Godot 4
-; Pedagogical Dual-Target Implementation (Target 1: Godot 4 Native 2D)
+; Retro 2D/2.5D Tile-Platformer (VGLC-compatible) in Godot 4
+; Pedagogical Dual-Target Implementation (Target 1: Godot 4 Native 2D / 2.5D)
 
 config_version=5
 
 [application]
 
-config/name="Super Mario 2D (Godot 4)"
-config/description="Godot 4 2D Tile-Platformer based on official VGLC Super Mario Bros. World 1-1"
+config/name="Retro Platformer (Godot 4)"
+config/description="Didactic 2D/2.5D Tile-Platformer case study in Godot 4 based on VGLC ASCII level architecture"
 run/main_scene="res://scenes/main.tscn"
 config/features=PackedStringArray("4.7", "Forward Plus")
 config/icon="res://icon.svg"

@@ -31,7 +31,10 @@ func _ready() -> void:
 	state_manager.coins_changed.connect(_on_coins_changed)
 	state_manager.state_changed.connect(_on_state_changed)
 
-	tilemap_loader.load_level_from_file("res://levels/mario-1-1.txt")
+	var level_path := "res://levels/level-1.txt"
+	if not FileAccess.file_exists(level_path) and FileAccess.file_exists("res://levels/mario-1-1.txt"):
+		level_path = "res://levels/mario-1-1.txt"
+	tilemap_loader.load_level_from_file(level_path)
 	tilemap_loader.coin_collected.connect(_on_coin_collected)
 	tilemap_loader.goal_reached.connect(_on_goal_reached)
 

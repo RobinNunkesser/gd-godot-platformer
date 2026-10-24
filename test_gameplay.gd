@@ -46,11 +46,11 @@ func _init() -> void:
 	print("  -> StateManager OK.")
 
 	# Test 3: TileMapLoader 2D
-	print("[3/5] Testing TileMapLoader (2D) on VGLC World 1-1...")
+	print("[3/5] Testing TileMapLoader (2D) on level-1.txt...")
 	var loader = TileMapLoader.new()
 	root.add_child(loader)
-	var loaded: bool = loader.load_level_from_file("res://levels/mario-1-1.txt")
-	if not loaded or loader.level_height_rows != 14 or loader.level_width_cols < 200:
+	var loaded: bool = loader.load_level_from_file("res://levels/level-1.txt")
+	if not loaded or loader.level_height_rows != 14 or loader.level_width_cols < 100:
 		push_error("2D Loader failed!")
 		success = false
 	else:
@@ -78,8 +78,8 @@ func _init() -> void:
 	print("[5/5] Testing 3D Pipeline (TileMapLoader3D & Player3D)...")
 	var loader3d = TileMapLoader3D.new()
 	root.add_child(loader3d)
-	var loaded3d: bool = loader3d.load_level_from_file("res://levels/mario-1-1.txt")
-	if not loaded3d or loader3d.level_height_rows != 14 or loader3d.level_width_cols < 200:
+	var loaded3d: bool = loader3d.load_level_from_file("res://levels/level-1.txt")
+	if not loaded3d or loader3d.level_height_rows != 14 or loader3d.level_width_cols < 100:
 		push_error("3D Loader failed!")
 		success = false
 	else:

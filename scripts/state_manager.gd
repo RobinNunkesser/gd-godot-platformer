@@ -12,7 +12,7 @@ var score: int = 0
 var coins: int = 0
 var highscore: int = 0
 
-const SAVE_PATH: String = "user://mario_platformer_score.save"
+const SAVE_PATH: String = "user://platformer_score.save"
 
 func _init() -> void:
 	load_highscore()

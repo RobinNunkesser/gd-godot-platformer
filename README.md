@@ -1,21 +1,22 @@
-# 🍄 gd-platformer-godot (Super Mario World 1-1 in Godot 4)
+# 🎮 gd-platformer-godot (Retro Tile-Platformer in Godot 4)
 
-> **Didaktisches 2D-Tile-Platformer-Gegenstück** zur Vorlesung *Interaktive Grafikanwendungen (IGA)*  
-> Duale Implementierung (Target 1: Godot 4 Native 2D) basierend auf demselben **Micro-GDD** wie `ts-platformer-babylonjs`.
+> **Didaktisches 2D/2.5D-Tile-Platformer-Gegenstück** zur Vorlesung *Interaktive Grafikanwendungen (IGA)*  
+> Duale Implementierung (Target 1: Godot 4 Native 2D / 2.5D) basierend auf demselben **Micro-GDD** wie [`ts-babylonjs-platformer`](https://github.com/RobinNunkesser/ts-platformer-babylonjs).
 
 ---
 
 ## 🎯 Didaktische Ziele & Duale Architektur
 
-Dieses Projekt demonstriert die Realisierung eines klassischen Tile-Platformers in **Godot 4 (GDScript)** auf Basis der vollständigen ASCII-Matrix des **Video Game Level Corpus (VGLC)** für *Super Mario Bros.* World 1-1 (202 Spalten $\times$ 14 Zeilen):
+Dieses Projekt demonstriert die Realisierung eines klassischen Tile-Platformers in **Godot 4 (GDScript)** auf Basis einer modularen ASCII-Level-Architektur, kompatibel zum wissenschaftlichen **Video Game Level Corpus (VGLC)**:
 
 - **$\mathcal{O}(1)$ Kachel-Kollision:** Schnelle Zuordnung von Weltkoordinaten zu diskreten Kacheln ohne Paarvergleiche.
-- **Engine-Native Physik:** Nutzung von `CharacterBody2D.move_and_slide()` für stabile Kanten- und Rampenkollisionen.
+- **Engine-Native Physik:** Nutzung von `CharacterBody2D.move_and_slide()` bzw. `CharacterBody3D` (mit Z-Achsen-Lock) für stabile Kanten- und Blockkollisionen.
 - **Game Feel & Saftigkeit:**
   - **Coyote Time (120 ms):** Sprünge nach Verlassen einer Kante bleiben für eine kurze Gnadenfrist gültig.
   - **Jump Buffering (120 ms):** Vorab-Eingaben kurz vor der Landung werden beim Bodenkontakt sofort ausgelöst.
   - **Variable Sprunghöhe:** Frühes Loslassen der Sprungtaste kappt den Aufwärtsimpuls.
-- **Zustandsautomat & Highscore:** `READY`, `PLAYING`, `PAUSED`, `FALLEN`, `VICTORY` mit lokaler Persistenz (`user://mario_platformer_score.save`).
+- **Zustandsautomat & Highscore:** `READY`, `PLAYING`, `PAUSED`, `FALLEN`, `VICTORY` mit lokaler Persistenz (`user://platformer_score.save`).
+- **100 % Prozedurale Grafik:** Keine proprietären Sprite-Rips oder Fremd-Assets; alle Kacheln werden rein prozedural über Farben (`ColorRect`) bzw. PBR-Materialien in 3D gerendert.
 
 ---
 
@@ -30,7 +31,7 @@ gd-platformer-godot/
 │   ├── 04_state_machine.md
 │   └── 05_parameters.md
 ├── levels/
-│   └── mario-1-1.txt           # Vollständiges VGLC World 1-1 (202 Spalten)
+│   └── level-1.txt             # Didaktischer MIT-Referenzlevel (120 Spalten x 14 Zeilen)
 ├── scenes/
 │   ├── main.tscn               # 2D-Hauptszene (ColorRect, 2D-Kamera)
 │   ├── player.tscn             # 2D CharacterBody2D Szene
@@ -47,14 +48,36 @@ gd-platformer-godot/
 │   ├── main.gd                 # 2D Game Loop
 │   └── main_3d.gd              # 3D Game Loop
 ├── test_gameplay.gd            # Headless Unit- & Gameplay-Testrunner (2D & 3D)
+├── LICENSE                     # MIT License
 └── project.godot               # Godot 4 Projektkonfiguration
 ```
 
 ---
 
+## 🗺️ Kompatibilität mit dem Video Game Level Corpus (VGLC)
+
+Das Spiel lädt standardmäßig den mitgelieferten didaktischen Referenzlevel `levels/level-1.txt`. Der Parser unterstützt beliebige 14-zeilige ASCII-Karten im Format des **Video Game Level Corpus (VGLC)** (*Summerville et al., FDG 2016*):
+
+- `X` = Fester Boden / Pyramidenstufe
+- `S` = Ziegelblock (*Brick*)
+- `?` / `Q` = Fragezeichen- / Münzblock
+- `<>`, `[]` = Röhre (Kopf / Schaft)
+- `|` / `F` = Zielflagge (*Goal*)
+- `-` = Leerraum / Luft
+
+Wer das Spiel gegen den akademischen Forschungsbenchmark von *Super Mario Bros.* World 1-1 testen möchte, kann die Rohdatei direkt aus dem [TheVGLC/TheVGLC](https://github.com/TheVGLC/TheVGLC) Repository in den Ordner `levels/` laden:
+
+```bash
+curl -o levels/mario-1-1.txt "https://raw.githubusercontent.com/TheVGLC/TheVGLC/master/Super%20Mario%20Bros/Processed/mario-1-1.txt"
+```
+
+Liegt `levels/mario-1-1.txt` vor, wird die Datei vom Loader automatisch erkannt und als alternativer Level bereitgestellt.
+
+---
+
 ## 🚀 Spiel starten
 
-### 1. In Godot 4 Editor
+### 1. Im Godot 4 Editor
 1. Öffne Godot 4.3+.
 2. Wähle **Import** und navigiere in diesen Ordner.
 3. Starte entweder:
@@ -66,7 +89,7 @@ gd-platformer-godot/
 # 2D-Version starten
 godot scenes/main.tscn
 
-# 2.5D-3D-Version mit Vulkan-Licht und Parallaxe starten
+# 2.5D-Version mit Vulkan-Licht und Parallaxe starten
 godot scenes/main_3d.tscn
 
 # Headless Unit-Tests (prüft 2D & 3D Pipelines)
@@ -83,6 +106,12 @@ godot --headless -s test_gameplay.gd
 | **Springen** | `Leertaste`, `W` oder Pfeiltaste `↑` |
 | **Pause** | `P` |
 | **Schnell-Reset** | `R` |
+
+---
+
+## 📄 Lizenz
+
+Dieses Projekt ist unter der **[MIT-Lizenz](LICENSE)** lizenziert.
 
 ---
 
