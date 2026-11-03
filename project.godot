@@ -53,5 +53,6 @@ restart={
 
 [rendering]
 
+textures/vram_compression/import_etc2_astc=true
 renderer/rendering_method.web="gl_compatibility"
 environment/defaults/default_clear_color=Color(0.38, 0.6, 0.98, 1)
